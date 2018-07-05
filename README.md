@@ -33,6 +33,6 @@ The R script `run_analysis.R` can be used to create the data set. It retrieves t
 - Create a second, independent tidy set with the average of each variable for each activity and each subject.
 - Write the data set to the `tidy_data.txt` file.
 
-The `tidy_data.txt` in this repository was created by running the `run_analysis.R` script using R version 3.2.2 (2015-08-14) on Windows 8.1 64-bit edition.
+The `tidy_data.txt` in this repository was created by running the `run_analysis.R` script using R version 3.5.0 (2018-04-23) on Windows 10 32-bit edition.
 
 This script requires the `dplyr` package (version 0.4.3 was used).
