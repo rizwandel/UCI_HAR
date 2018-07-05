@@ -1,49 +1,64 @@
-install.packages("dplyr")
 library(dplyr)
+
 ####### Get Data #######
 
 # download zip file
 zip_url <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
-zip_file <- "UCI_HAR_Data.zip"
+zip_file <- "UCI HAR Dataset.zip"
 
 if(!file.exists(zip_file)){download.file(zip_url, zip_file, mode = 'wb')}
 
 # unzipping zip file containing if data directory doesnot exists
-data_path <- "UCI_HAR_Data"
-if(!file.exists(data_path)){unzip(zip_file)}
+
+data_path <- "UCI HAR Dataset"
+
+if(!file.exists(data_path)){
+        unzip(zip_file)
+        }
 
 ###### Read Data #########
 
 # read training data
 
-trainingSubjects <- read.table(file.path(data_path), "train", "subject_train.txt")
-trainingValues <- read.table(file.path(data_path), "train", "X_train.txt")
-trainingActivity <- read.table(file.path(data_path), "train", "y_train.txt")
+trainingSubjects <- read.table(file.path((data_path),"train", "subject_train.txt"))
+trainingSubjects
+
+trainingValues <- read.table(file.path((data_path), "train", "x_train.txt"))
+trainingValues
+
+trainingActivity <- read.table(file.path((data_path), "train", "y_train.txt"))
+trainingActivity
+
 
 # read test data
 
-testSubjects <- read.table(file.path(data_path), "test", "subject_test.txt")
-testValues <- read.table(file.path(data_path), "test", "X_test.txt")
-testActivity <- read.table(file.path(data_path), "test", "y_test.txt")
+testSubjects <- read.table(file.path((data_path), "test", "subject_test.txt"))
+
+testValues <- read.table(file.path((data_path), "test", "X_test.txt"))
+
+testActivity <- read.table(file.path((data_path), "test", "y_test.txt"))
 
 # read features
 
 features <- read.table(file.path(data_path, "features.txt"), as.is = TRUE)
+features
 
 # read activity labels
 
 activities <- read.table(file.path(data_path, "activity_labels.txt"))
+
 colnames(activities) <- c("activityId", "activityLabel")
 
 ### Merge Training and Test data sets into one data set ###
 
 # concatenate
 
-humanActivity <- rbind(cbind(trainingSubjects, traingValues, traingActivity),cbind(testSubjects, testValues, testActivity))
+humanActivity <- rbind(cbind(trainingSubjects, trainingValues, trainingActivity),cbind(testSubjects, testValues, testActivity))
 
+humanActivity
 # Remove individual data tables to save memory
 
-rm(traingSubjects,traingValues,traingActivity, testSubjects, testValues, testActivity)
+rm(trainingSubjects,trainingValues,trainingActivity, testSubjects, testValues, testActivity)
 
 # Assign column names
 
@@ -51,16 +66,16 @@ colnames(humanActivity) <- c("subject", features[,2],"activity")
 
 ### Extract only values containing mean and std from the humanActivity ###
 
-columnstokeep <- grepl("subject| activity | mean | std", colnames(humanActivity))
+columnstokeep <- grepl("subject|activity|mean|std", colnames(humanActivity))
 
 humanActivity <- humanActivity[,columnstokeep]
-
+humanActivity
 # Use descriptive names
 
 # Replace activity values with named factor levels
 
-humanActivity$activity <- factor(humanActivity$activity, 
-                                 levels = activities[, 1], labels = activities[, 2])
+humanActivity$activity <- factor(humanActivity$activity,levels = activities[, 1], labels = activities[, 2])
+
 
 # Label the data set with descriptive variable names
 
@@ -92,7 +107,7 @@ colnames(humanActivity) <- humanActivityCols
 
 humanActivityMeans <- humanActivity %>% 
         group_by(subject, activity) %>%
-        summarise_each(funs(mean))
+        summarise_all(funs(mean))
 
 # output to file "tidy_data.txt"
 
